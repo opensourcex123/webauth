@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/go-webauthn/webauthn/protocol"
+	"github.com/opensourcex123/webauth/protocol"
 	"github.com/stretchr/testify/assert"
 )
 

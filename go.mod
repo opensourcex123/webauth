@@ -1,4 +1,4 @@
-module github.com/go-webauthn/webauthn
+module github.com/opensourcex123/webauth
 
 go 1.21
 
