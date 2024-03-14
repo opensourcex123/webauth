@@ -15,7 +15,7 @@ import (
 
 	"github.com/go-webauthn/x/revoke"
 
-	"github.com/go-webauthn/webauthn/protocol/webauthncose"
+	"github.com/opensourcex123/webauth/protocol/webauthncose"
 )
 
 type PublicKeyCredentialParameters struct {

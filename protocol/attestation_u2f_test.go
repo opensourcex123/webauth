@@ -4,7 +4,7 @@ import (
 	"crypto/sha256"
 	"testing"
 
-	"github.com/go-webauthn/webauthn/metadata"
+	"github.com/opensourcex123/webauth/metadata"
 )
 
 func TestVerifyU2FFormat(t *testing.T) {

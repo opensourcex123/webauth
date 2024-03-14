@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/go-webauthn/webauthn/metadata"
+	"github.com/opensourcex123/webauth/metadata"
 )
 
 func TestAttestationVerify(t *testing.T) {

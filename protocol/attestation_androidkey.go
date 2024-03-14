@@ -6,8 +6,8 @@ import (
 	"encoding/asn1"
 	"fmt"
 
-	"github.com/go-webauthn/webauthn/metadata"
-	"github.com/go-webauthn/webauthn/protocol/webauthncose"
+	"github.com/opensourcex123/webauth/metadata"
+	"github.com/opensourcex123/webauth/protocol/webauthncose"
 )
 
 var androidAttestationKey = "android-key"

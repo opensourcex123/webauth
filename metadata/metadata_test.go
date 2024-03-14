@@ -10,7 +10,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/go-webauthn/webauthn/protocol/webauthncose"
+	"github.com/opensourcex123/webauth/protocol/webauthncose"
 )
 
 func downloadBytes(url string, c http.Client) ([]byte, error) {

@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/go-webauthn/webauthn/metadata"
+	"github.com/opensourcex123/webauth/metadata"
 )
 
 func Test_verifySafetyNetFormat(t *testing.T) {

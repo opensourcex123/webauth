@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/crypto/ed25519"
 
-	"github.com/go-webauthn/webauthn/protocol/webauthncbor"
+	"github.com/opensourcex123/webauth/protocol/webauthncbor"
 )
 
 // TestOKPSignatureVerification is a compatibility test to ensure that removing

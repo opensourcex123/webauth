@@ -11,8 +11,8 @@ import (
 
 	"github.com/google/go-tpm/legacy/tpm2"
 
-	"github.com/go-webauthn/webauthn/metadata"
-	"github.com/go-webauthn/webauthn/protocol/webauthncose"
+	"github.com/opensourcex123/webauth/metadata"
+	"github.com/opensourcex123/webauth/protocol/webauthncose"
 )
 
 var tpmAttestationKey = "tpm"

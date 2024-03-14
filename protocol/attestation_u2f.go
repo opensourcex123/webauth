@@ -6,9 +6,9 @@ import (
 	"crypto/elliptic"
 	"crypto/x509"
 
-	"github.com/go-webauthn/webauthn/metadata"
-	"github.com/go-webauthn/webauthn/protocol/webauthncbor"
-	"github.com/go-webauthn/webauthn/protocol/webauthncose"
+	"github.com/opensourcex123/webauth/metadata"
+	"github.com/opensourcex123/webauth/protocol/webauthncbor"
+	"github.com/opensourcex123/webauth/protocol/webauthncose"
 )
 
 var u2fAttestationKey = "fido-u2f"
