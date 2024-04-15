@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 
 	"github.com/opensourcex123/webauth/protocol/webauthncose"
@@ -133,6 +134,7 @@ func (p *ParsedCredentialAssertionData) Verify(storedChallenge string, relyingPa
 	// returned by the authenticator
 	validError := p.Response.CollectedClientData.Verify(storedChallenge, AssertCeremony, relyingPartyOrigins)
 	if validError != nil {
+		log.Println("client data verified", validError)
 		return validError
 	}
 
@@ -147,6 +149,7 @@ func (p *ParsedCredentialAssertionData) Verify(storedChallenge string, relyingPa
 	// Handle steps 11 through 14, verifying the authenticator data.
 	validError = p.Response.AuthenticatorData.Verify(rpIDHash[:], appIDHash[:], verifyUser)
 	if validError != nil {
+		log.Println("authenticator data verified", validError)
 		return validError
 	}
 

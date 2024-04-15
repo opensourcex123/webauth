@@ -10,6 +10,7 @@ import (
 	"encoding/pem"
 	"fmt"
 	"hash"
+	"log"
 	"math/big"
 
 	"github.com/google/go-tpm/legacy/tpm2"
@@ -187,6 +188,7 @@ func ParsePublicKey(keyBytes []byte) (interface{}, error) {
 	// TODO (james-d-elliott): investigate the ignored errors.
 	webauthncbor.Unmarshal(keyBytes, &pk)
 
+	log.Println("passkey type:", COSEKeyType(pk.KeyType))
 	switch COSEKeyType(pk.KeyType) {
 	case OctetKey:
 		var o OKPPublicKeyData
@@ -349,12 +351,16 @@ func (k *EC2PublicKeyData) TPMCurveID() tpm2.EllipticCurve {
 func VerifySignature(key interface{}, data []byte, sig []byte, platform string) (bool, error) {
 	switch k := key.(type) {
 	case OKPPublicKeyData:
+		log.Println("okpublic key type")
 		return k.Verify(data, sig)
 	case EC2PublicKeyData:
+		log.Println("EC2 type")
 		return k.Verify(data, sig, platform)
 	case RSAPublicKeyData:
+		log.Println("rsa public key type")
 		return k.Verify(data, sig)
 	default:
+		log.Println("default type")
 		return false, ErrUnsupportedKey
 	}
 }
