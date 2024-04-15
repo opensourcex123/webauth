@@ -139,29 +139,29 @@ func WithAppIdExtension(appid string) LoginOption {
 }
 
 // FinishLogin takes the response from the client and validate it against the user credentials and stored session data.
-func (webauthn *WebAuthn) FinishLogin(user User, session SessionData, response *http.Request) (*Credential, error) {
+func (webauthn *WebAuthn) FinishLogin(user User, session SessionData, response *http.Request, platform string) (*Credential, error) {
 	parsedResponse, err := protocol.ParseCredentialRequestResponse(response)
 	if err != nil {
 		return nil, err
 	}
 
-	return webauthn.ValidateLogin(user, session, parsedResponse)
+	return webauthn.ValidateLogin(user, session, parsedResponse, platform)
 }
 
 // FinishDiscoverableLogin takes the response from the client and validate it against the handler and stored session data.
 // The handler helps to find out which user must be used to validate the response. This is a function defined in your
 // business code that will retrieve the user from your persistent data.
-func (webauthn *WebAuthn) FinishDiscoverableLogin(handler DiscoverableUserHandler, session SessionData, response *http.Request) (*Credential, error) {
+func (webauthn *WebAuthn) FinishDiscoverableLogin(handler DiscoverableUserHandler, session SessionData, response *http.Request, platform string) (*Credential, error) {
 	parsedResponse, err := protocol.ParseCredentialRequestResponse(response)
 	if err != nil {
 		return nil, err
 	}
 
-	return webauthn.ValidateDiscoverableLogin(handler, session, parsedResponse)
+	return webauthn.ValidateDiscoverableLogin(handler, session, parsedResponse, platform)
 }
 
 // ValidateLogin takes a parsed response and validates it against the user credentials and session data.
-func (webauthn *WebAuthn) ValidateLogin(user User, session SessionData, parsedResponse *protocol.ParsedCredentialAssertionData) (*Credential, error) {
+func (webauthn *WebAuthn) ValidateLogin(user User, session SessionData, parsedResponse *protocol.ParsedCredentialAssertionData, platform string) (*Credential, error) {
 	if !bytes.Equal(user.WebAuthnID(), session.UserID) {
 		return nil, protocol.ErrBadRequest.WithDetails("ID mismatch for User and Session")
 	}
@@ -170,11 +170,11 @@ func (webauthn *WebAuthn) ValidateLogin(user User, session SessionData, parsedRe
 		return nil, protocol.ErrBadRequest.WithDetails("Session has Expired")
 	}
 
-	return webauthn.validateLogin(user, session, parsedResponse)
+	return webauthn.validateLogin(user, session, parsedResponse, platform)
 }
 
 // ValidateDiscoverableLogin is an overloaded version of ValidateLogin that allows for discoverable credentials.
-func (webauthn *WebAuthn) ValidateDiscoverableLogin(handler DiscoverableUserHandler, session SessionData, parsedResponse *protocol.ParsedCredentialAssertionData) (*Credential, error) {
+func (webauthn *WebAuthn) ValidateDiscoverableLogin(handler DiscoverableUserHandler, session SessionData, parsedResponse *protocol.ParsedCredentialAssertionData, platform string) (*Credential, error) {
 	if session.UserID != nil {
 		return nil, protocol.ErrBadRequest.WithDetails("Session was not initiated as a client-side discoverable login")
 	}
@@ -188,11 +188,11 @@ func (webauthn *WebAuthn) ValidateDiscoverableLogin(handler DiscoverableUserHand
 		return nil, protocol.ErrBadRequest.WithDetails(fmt.Sprintf("Failed to lookup Client-side Discoverable Credential: %s", err))
 	}
 
-	return webauthn.validateLogin(user, session, parsedResponse)
+	return webauthn.validateLogin(user, session, parsedResponse, platform)
 }
 
 // ValidateLogin takes a parsed response and validates it against the user credentials and session data.
-func (webauthn *WebAuthn) validateLogin(user User, session SessionData, parsedResponse *protocol.ParsedCredentialAssertionData) (*Credential, error) {
+func (webauthn *WebAuthn) validateLogin(user User, session SessionData, parsedResponse *protocol.ParsedCredentialAssertionData, platform string) (*Credential, error) {
 	// Step 1. If the allowCredentials option was given when this authentication ceremony was initiated,
 	// verify that credential.id identifies one of the public key credentials that were listed in
 	// allowCredentials.
@@ -276,7 +276,7 @@ func (webauthn *WebAuthn) validateLogin(user User, session SessionData, parsedRe
 	}
 
 	// Handle steps 4 through 16.
-	validError := parsedResponse.Verify(session.Challenge, rpID, rpOrigins, appID, shouldVerifyUser, loginCredential.PublicKey)
+	validError := parsedResponse.Verify(session.Challenge, rpID, rpOrigins, appID, shouldVerifyUser, loginCredential.PublicKey, platform)
 	if validError != nil {
 		return nil, validError
 	}

@@ -77,18 +77,22 @@ func (k *OKPPublicKeyData) Verify(data []byte, sig []byte) (bool, error) {
 }
 
 // Verify Elliptic Curve Public Key Signature.
-func (k *EC2PublicKeyData) Verify(data []byte, sig []byte) (bool, error) {
+func (k *EC2PublicKeyData) Verify(data []byte, sig []byte, platform string) (bool, error) {
 	var curve elliptic.Curve
 
-	switch COSEAlgorithmIdentifier(k.Algorithm) {
-	case AlgES512: // IANA COSE code for ECDSA w/ SHA-512.
-		curve = elliptic.P521()
-	case AlgES384: // IANA COSE code for ECDSA w/ SHA-384.
-		curve = elliptic.P384()
-	case AlgES256: // IANA COSE code for ECDSA w/ SHA-256.
+	if platform == "ios" {
 		curve = elliptic.P256()
-	default:
-		return false, ErrUnsupportedAlgorithm
+	} else {
+		switch COSEAlgorithmIdentifier(k.Algorithm) {
+		case AlgES512: // IANA COSE code for ECDSA w/ SHA-512.
+			curve = elliptic.P521()
+		case AlgES384: // IANA COSE code for ECDSA w/ SHA-384.
+			curve = elliptic.P384()
+		case AlgES256: // IANA COSE code for ECDSA w/ SHA-256.
+			curve = elliptic.P256()
+		default:
+			return false, ErrUnsupportedAlgorithm
+		}
 	}
 
 	pubkey := &ecdsa.PublicKey{
@@ -342,12 +346,12 @@ func (k *EC2PublicKeyData) TPMCurveID() tpm2.EllipticCurve {
 	}
 }
 
-func VerifySignature(key interface{}, data []byte, sig []byte) (bool, error) {
+func VerifySignature(key interface{}, data []byte, sig []byte, platform string) (bool, error) {
 	switch k := key.(type) {
 	case OKPPublicKeyData:
 		return k.Verify(data, sig)
 	case EC2PublicKeyData:
-		return k.Verify(data, sig)
+		return k.Verify(data, sig, platform)
 	case RSAPublicKeyData:
 		return k.Verify(data, sig)
 	default:
