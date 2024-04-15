@@ -31,7 +31,7 @@ func init() {
 //	  }
 //
 // Specification: §8.4. Android Key Attestation Statement Format (https://www.w3.org/TR/webauthn/#sctn-android-key-attestation)
-func verifyAndroidKeyFormat(att AttestationObject, clientDataHash []byte) (string, []interface{}, error) {
+func verifyAndroidKeyFormat(att AttestationObject, clientDataHash []byte, platform string) (string, []interface{}, error) {
 	// Given the verification procedure inputs attStmt, authenticatorData and clientDataHash, the verification procedure is as follows:
 	// §8.4.1. Verify that attStmt is valid CBOR conforming to the syntax defined above and perform CBOR decoding on it to extract
 	// the contained fields.
@@ -85,7 +85,7 @@ func verifyAndroidKeyFormat(att AttestationObject, clientDataHash []byte) (strin
 
 	e := pubKey.(webauthncose.EC2PublicKeyData)
 
-	valid, err = e.Verify(signatureData, sig)
+	valid, err = e.Verify(signatureData, sig, "android")
 	if err != nil || !valid {
 		return "", nil, ErrInvalidAttestation.WithDetails(fmt.Sprintf("Error parsing public key: %+v\n", err))
 	}

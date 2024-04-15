@@ -36,7 +36,7 @@ func init() {
 //	 }
 //
 // Specification: §8.2. Packed Attestation Statement Format (https://www.w3.org/TR/webauthn/#sctn-packed-attestation)
-func verifyPackedFormat(att AttestationObject, clientDataHash []byte) (string, []interface{}, error) {
+func verifyPackedFormat(att AttestationObject, clientDataHash []byte, platform string) (string, []interface{}, error) {
 	// Step 1. Verify that attStmt is valid CBOR conforming to the syntax defined
 	// above and perform CBOR decoding on it to extract the contained fields.
 
@@ -70,7 +70,7 @@ func verifyPackedFormat(att AttestationObject, clientDataHash []byte) (string, [
 	}
 
 	// Step 4. If neither x5c nor ecdaaKeyId is present, self attestation is in use.
-	return handleSelfAttestation(alg, att.AuthData.AttData.CredentialPublicKey, att.RawAuthData, clientDataHash, sig)
+	return handleSelfAttestation(alg, att.AuthData.AttData.CredentialPublicKey, att.RawAuthData, clientDataHash, sig, platform)
 }
 
 // Handle the attestation steps laid out in
@@ -205,7 +205,7 @@ func handleECDAAAttestation(signature, clientDataHash, ecdaaKeyID []byte) (strin
 	return "Packed (ECDAA)", nil, ErrNotSpecImplemented
 }
 
-func handleSelfAttestation(alg int64, pubKey, authData, clientDataHash, signature []byte) (string, []interface{}, error) {
+func handleSelfAttestation(alg int64, pubKey, authData, clientDataHash, signature []byte, platform string) (string, []interface{}, error) {
 	// §4.1 Validate that alg matches the algorithm of the credentialPublicKey in authenticatorData.
 
 	// §4.2 Verify that sig is a valid signature over the concatenation of authenticatorData and
@@ -232,7 +232,7 @@ func handleSelfAttestation(alg int64, pubKey, authData, clientDataHash, signatur
 		return "", nil, err
 	}
 
-	valid, err := webauthncose.VerifySignature(key, verificationData, signature)
+	valid, err := webauthncose.VerifySignature(key, verificationData, signature, platform)
 	if !valid && err == nil {
 		return "", nil, ErrInvalidAttestation.WithDetails("Unable to verify signature")
 	}

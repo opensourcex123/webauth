@@ -68,7 +68,7 @@ type AttestationObject struct {
 	AttStatement map[string]interface{} `json:"attStmt,omitempty"`
 }
 
-type attestationFormatValidationHandler func(AttestationObject, []byte) (string, []interface{}, error)
+type attestationFormatValidationHandler func(AttestationObject, []byte, string) (string, []interface{}, error)
 
 var attestationRegistry = make(map[string]attestationFormatValidationHandler)
 
@@ -114,7 +114,7 @@ func (ccr *AuthenticatorAttestationResponse) Parse() (p *ParsedAttestationRespon
 //
 // Steps 9 through 12 are verified against the auth data. These steps are identical to 11 through 14 for assertion so we
 // handle them with AuthData.
-func (attestationObject *AttestationObject) Verify(relyingPartyID string, clientDataHash []byte, verificationRequired bool) error {
+func (attestationObject *AttestationObject) Verify(relyingPartyID string, clientDataHash []byte, verificationRequired bool, platform string) error {
 	rpIDHash := sha256.Sum256([]byte(relyingPartyID))
 
 	// Begin Step 9 through 12. Verify that the rpIdHash in authData is the SHA-256 hash of the RP ID expected by the RP.
@@ -151,7 +151,7 @@ func (attestationObject *AttestationObject) Verify(relyingPartyID string, client
 	// Step 14. Verify that attStmt is a correct attestation statement, conveying a valid attestation signature, by using
 	// the attestation statement format fmt’s verification procedure given attStmt, authData and the hash of the serialized
 	// client data computed in step 7.
-	attestationType, x5c, err := formatHandler(*attestationObject, clientDataHash)
+	attestationType, x5c, err := formatHandler(*attestationObject, clientDataHash, platform)
 	if err != nil {
 		return err.(*Error).WithInfo(attestationType)
 	}

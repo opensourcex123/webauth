@@ -19,7 +19,7 @@ func TestRegistration_FinishRegistrationFailure(t *testing.T) {
 
 	webauthn := &WebAuthn{}
 
-	credential, err := webauthn.FinishRegistration(user, session, nil)
+	credential, err := webauthn.FinishRegistration(user, session, nil, "android")
 	if err == nil {
 		t.Errorf("FinishRegistration() error = nil, want %v", protocol.ErrBadRequest.Type)
 	}

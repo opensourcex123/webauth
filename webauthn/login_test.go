@@ -17,7 +17,7 @@ func TestLogin_FinishLoginFailure(t *testing.T) {
 
 	webauthn := &WebAuthn{}
 
-	credential, err := webauthn.FinishLogin(user, session, nil)
+	credential, err := webauthn.FinishLogin(user, session, nil, "android")
 	if err == nil {
 		t.Errorf("FinishLogin() error = nil, want %v", protocol.ErrBadRequest.Type)
 	}
