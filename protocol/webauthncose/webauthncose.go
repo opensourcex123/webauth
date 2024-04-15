@@ -82,6 +82,7 @@ func (k *EC2PublicKeyData) Verify(data []byte, sig []byte, platform string) (boo
 	var curve elliptic.Curve
 
 	if platform == "ios" {
+		log.Println("here")
 		curve = elliptic.P256()
 	} else {
 		switch COSEAlgorithmIdentifier(k.Algorithm) {
@@ -107,7 +108,9 @@ func (k *EC2PublicKeyData) Verify(data []byte, sig []byte, platform string) (boo
 	}
 
 	e := &ECDSASignature{}
-	f := HasherFromCOSEAlg(COSEAlgorithmIdentifier(k.PublicKeyData.Algorithm))
+	//f := HasherFromCOSEAlg(COSEAlgorithmIdentifier(k.PublicKeyData.Algorithm))
+	f := HasherFromCOSEAlg(AlgES256)
+
 	h := f()
 
 	h.Write(data)
