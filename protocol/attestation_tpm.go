@@ -21,7 +21,7 @@ func init() {
 	RegisterAttestationFormat(tpmAttestationKey, verifyTPMFormat)
 }
 
-func verifyTPMFormat(att AttestationObject, clientDataHash []byte) (string, []interface{}, error) {
+func verifyTPMFormat(att AttestationObject, clientDataHash []byte, platform string) (string, []interface{}, error) {
 	// Given the verification procedure inputs attStmt, authenticatorData
 	// and clientDataHash, the verification procedure is as follows
 

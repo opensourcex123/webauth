@@ -33,7 +33,7 @@ func init() {
 //	  }
 //
 // Specification: §8.8. Apple Anonymous Attestation Statement Format (https://www.w3.org/TR/webauthn/#sctn-apple-anonymous-attestation)
-func verifyAppleFormat(att AttestationObject, clientDataHash []byte) (string, []interface{}, error) {
+func verifyAppleFormat(att AttestationObject, clientDataHash []byte, platform string) (string, []interface{}, error) {
 	// Step 1. Verify that attStmt is valid CBOR conforming to the syntax defined
 	// above and perform CBOR decoding on it to extract the contained fields.
 
